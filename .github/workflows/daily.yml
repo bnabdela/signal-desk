@@ -30,6 +30,12 @@ jobs:
       - name: Refresh market data
         run: python update_data.py
         timeout-minutes: 10
+      - name: Refresh research intelligence
+        run: python research_data.py
+        timeout-minutes: 15
+        env:
+          OPENAI_API_KEY: ${{ secrets.OPENAI_API_KEY }}
+          OPENAI_MODEL: gpt-4.1-mini
       - uses: actions/configure-pages@v5
       - uses: actions/upload-pages-artifact@v4
         with:
