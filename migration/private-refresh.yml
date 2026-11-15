@@ -1,0 +1,49 @@
+name: Private Signal Desk data refresh (activate after migration)
+on:
+  workflow_dispatch:
+  schedule:
+    - cron: '15 12 * * *'
+    - cron: '15 22 * * 1-5'
+
+permissions:
+  contents: write
+
+concurrency:
+  group: signal-desk-private-refresh
+  cancel-in-progress: false
+
+jobs:
+  refresh:
+    # Do not publish private financial snapshots while repo is public
+    # or until Cloudflare Access has been verified.
+    if: ${{ github.event.repository.private && vars.SIGNAL_DESK_PRIVATE_READY == 'true' }}
+    runs-on: ubuntu-latest
+    timeout-minutes: 30
+    steps:
+      - uses: actions/checkout@v4
+        with:
+          persist-credentials: true
+      - uses: actions/setup-python@v5
+        with:
+          python-version: '3.12'
+          cache: pip
+      - name: Install market data dependencies
+        run: pip install -r requirements.txt
+      - name: Update company data, news, earnings and research
+        env:
+          OPENAI_API_KEY: ${{ secrets.OPENAI_API_KEY }}
+          OPENAI_MODEL: gpt-4.1-mini
+        run: |
+          python update_data.py
+          python research_data.py
+      - name: Commit latest data for Cloudflare Pages Git integration
+        run: |
+          git config user.name "signal-desk-bot"
+          git config user.email "41898282+github-actions[bot]@users.noreply.github.com"
+          git add data/dashboard.json data/research.json
+          if git diff --staged --quiet; then
+            echo "No new data"
+          else
+            git commit -m "data: refresh private research snapshot [skip ci]"
+            git push origin HEAD:main
+          fi
