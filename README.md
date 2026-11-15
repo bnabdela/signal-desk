@@ -1,6 +1,6 @@
 # Signal Desk — Daily Investment Dashboard
 
-A deployable personal-research HTML dashboard tracking GLW, SPCX, MU, AMD, ETSY, SNDK, BE, and PATH. Features: stock prices and changes, three-month price plots, market caps, valuation, quarterly/trailing fundamentals, earnings-date field, recent news, search, sorting, and investor-relations links.
+A deployable personal-research HTML dashboard tracking GLW, SPCX, MU, AMD, ETSY, SNDK, BE, and PATH. Features: stock prices and changes, three-month price plots, market caps, valuation, quarterly/trailing fundamentals, earnings-date field, recent news, search, sorting, and investor-relations links. The research upgrade adds a cross-watchlist headlines feed, upcoming earnings watch, side-by-side financial comparison table, quote coverage and freshness indicators, and GitHub shortcuts to add symbols or trigger updates.
 
 ## Publish a permanent public URL (GitHub Pages)
 
@@ -33,3 +33,11 @@ Commit the change. The workflow automatically reruns, fetches data, and publishe
 ## Local preview
 
 From the folder run `python3 -m http.server 8000`, then visit `http://localhost:8000`. Initial sample data is empty, pending a refresh. To populate locally, run `pip install -r requirements.txt && python update_data.py` with a working Internet connection.
+## Research dashboard upgrade
+
+- The **Add a stock** button links directly to `companies.json` in GitHub for editing. Commit a correctly formatted JSON entry to trigger a fresh deployment; there is no database or HTML edit necessary.
+- The **Run data update** button opens the GitHub Actions workflow. Choose **Run workflow** and run it once. A green check indicates workflow completion, not necessarily fresh quotes for every ticker.
+- The cross-company news feed orders provider articles by publication date and presents direct links. Earnings dates are supplied by the provider and must be verified independently.
+- The comparison table exposes prices, revenue, growth, market capitalization, P/S and free cash flow side by side. Financial periods and accounting conventions may differ.
+- The latest quote date and fetch counts help distinguish fresh data from failed retrievals. A browser refresh merely reloads the most recent published data; it does not execute the collector.
+- Stock symbols must be recognized by the financial data source. Unsupported tickers can appear with blank quotes rather than invented values.
