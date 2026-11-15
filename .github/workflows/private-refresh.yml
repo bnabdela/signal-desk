@@ -2,8 +2,7 @@ name: Private Signal Desk data refresh (activate after migration)
 on:
   workflow_dispatch:
   schedule:
-    - cron: '15 12 * * *'
-    - cron: '15 22 * * 1-5'
+    - cron: '15 12 * * 1-5'
 
 permissions:
   contents: write
@@ -18,7 +17,7 @@ jobs:
     # or until Cloudflare Access has been verified.
     if: ${{ github.event.repository.private && vars.SIGNAL_DESK_PRIVATE_READY == 'true' }}
     runs-on: ubuntu-latest
-    timeout-minutes: 30
+    timeout-minutes: 12
     steps:
       - uses: actions/checkout@v4
         with:
@@ -31,7 +30,8 @@ jobs:
         run: pip install -r requirements.txt
       - name: Update company data, news, earnings and research
         env:
-          OPENAI_API_KEY: ${{ secrets.OPENAI_API_KEY }}
+          # Paid AI disabled by default. Enable only by explicitly setting the repository variable.
+          OPENAI_API_KEY: ${{ vars.SIGNAL_DESK_ENABLE_PAID_AI == 'true' && secrets.OPENAI_API_KEY || '' }}
           OPENAI_MODEL: gpt-4.1-mini
         run: |
           python update_data.py
