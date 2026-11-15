@@ -1,0 +1,58 @@
+[
+  {
+    "ticker": "GLW",
+    "name": "Corning",
+    "theme": "Optical infrastructure",
+    "thesis": "AI data-center fiber and connectivity demand",
+    "ir": "https://investor.corning.com/"
+  },
+  {
+    "ticker": "SPCX",
+    "name": "SpaceX",
+    "theme": "Space & connectivity",
+    "thesis": "Starlink, reusable launch and AI infrastructure",
+    "ir": "https://ir.spacex.com/"
+  },
+  {
+    "ticker": "MU",
+    "name": "Micron",
+    "theme": "AI memory",
+    "thesis": "High-bandwidth memory and DRAM demand",
+    "ir": "https://investors.micron.com/"
+  },
+  {
+    "ticker": "AMD",
+    "name": "AMD",
+    "theme": "AI compute",
+    "thesis": "Server CPU share and accelerator adoption",
+    "ir": "https://ir.amd.com/"
+  },
+  {
+    "ticker": "ETSY",
+    "name": "Etsy",
+    "theme": "Consumer internet",
+    "thesis": "Marketplace recovery and profit improvement",
+    "ir": "https://investors.etsy.com/"
+  },
+  {
+    "ticker": "SNDK",
+    "name": "Sandisk",
+    "theme": "Storage",
+    "thesis": "NAND and enterprise SSD demand",
+    "ir": "https://investor.sandisk.com/"
+  },
+  {
+    "ticker": "BE",
+    "name": "Bloom Energy",
+    "theme": "Power infrastructure",
+    "thesis": "On-site generation for power-constrained data centers",
+    "ir": "https://investor.bloomenergy.com/"
+  },
+  {
+    "ticker": "PATH",
+    "name": "UiPath",
+    "theme": "Agentic automation",
+    "thesis": "Enterprise AI agent orchestration and automation",
+    "ir": "https://ir.uipath.com/"
+  }
+]
