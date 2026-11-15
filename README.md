@@ -41,3 +41,26 @@ From the folder run `python3 -m http.server 8000`, then visit `http://localhost:
 - The comparison table exposes prices, revenue, growth, market capitalization, P/S and free cash flow side by side. Financial periods and accounting conventions may differ.
 - The latest quote date and fetch counts help distinguish fresh data from failed retrievals. A browser refresh merely reloads the most recent published data; it does not execute the collector.
 - Stock symbols must be recognized by the financial data source. Unsupported tickers can appear with blank quotes rather than invented values.
+
+## Research Laboratory (new)
+
+Open `research.html` (linked from the main dashboard) after the next successful deployment.
+
+### Research data coverage
+- **Historical financials:** up to eight reported quarterly and annual periods for available income statement, balance sheet, and cash-flow lines. Source is unofficial Yahoo Finance via `yfinance`. A missing field shows an em dash, not a made-up number; some quarterly cash flows may be cumulative, so verify filings before comparing quarters.
+- **Earnings intelligence:** reported/estimated EPS and a calculated beat/miss percentage, when the source provides both; upcoming dates from the existing provider calendar. Verify all earnings events against company investor relations.
+- **Valuation laboratory:** manually controlled revenue growth, terminal free-cash-flow margin, exit EV/FCF multiple, time horizon, required return and net cash. The tool uses a constant share count inferred from market capitalization / price, and does not account for dilution, dividends, interim cash flows, or changes in net cash. The result is an illustrative scenario, **not a price target**.
+- **Catalyst alerts:** informational rules for >=5% closing-price moves, earnings dates within 14 days, comparable year-over-year quarterly revenue declines >=10% when enough history exists, and data retrieval failures. These are **snapshot alerts**, not push notifications or real-time monitoring.
+- **AI news intelligence:** optional OpenAI model interpretation of sourced headlines only; OFF by default. When OFF, the page still provides source-linked news. Models do not receive full article text, and interpretations are not factual verification.
+
+### Optional AI headline summaries
+To enable, open **Settings → Secrets and variables → Actions → New repository secret** in GitHub, name the secret `OPENAI_API_KEY`, paste an OpenAI API key, then run the workflow once. Do not paste API keys into tracked repository files or public HTML. The workflow uses `gpt-4.1-mini` by default and can incur API charges for each company, each refresh. You can remove the secret to disable AI generation; the news links will continue to work. AI errors are shown as unavailable rather than invented summaries.
+
+### Research workflow troubleshooting
+Go to **Actions → Refresh and publish investment dashboard → latest run**, and inspect **Refresh research intelligence** and **deploy-pages** steps. A green workflow check means the process finished; it is not proof that each financial field was retrieved. Check the Research Lab's source and period fields. GitHub Pages can take time to update after the workflow completes.
+
+### Adding a ticker
+Continue editing `companies.json` and committing valid JSON. The same configuration automatically drives the main dashboard, research collector, and research company selector. The data source must recognize the exchange ticker. No HTML code changes needed.
+
+### Security and limitations
+GitHub Pages publishes all JSON datasets publicly. Do not add personal balances, API credentials, or private notes to the data files. For production-grade research, use licensed market data, SEC-source reconciliation, more stringent data-quality checks, and explicit rate-limit/retry handling.
