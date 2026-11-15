@@ -44,6 +44,6 @@ jobs:
           if git diff --staged --quiet; then
             echo "No new data"
           else
-            git commit -m "data: refresh private research snapshot [skip ci]"
+            git commit -m "data: refresh private research snapshot"
             git push origin HEAD:main
           fi
