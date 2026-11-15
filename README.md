@@ -64,3 +64,13 @@ Continue editing `companies.json` and committing valid JSON. The same configurat
 
 ### Security and limitations
 GitHub Pages publishes all JSON datasets publicly. Do not add personal balances, API credentials, or private notes to the data files. For production-grade research, use licensed market data, SEC-source reconciliation, more stringent data-quality checks, and explicit rate-limit/retry handling.
+
+## Current hosting: public GitHub Pages (restored)
+
+The regular `.github/workflows/daily.yml` workflow is restored. It fetches quotes/news and research intelligence and deploys directly to GitHub Pages on pushes, scheduled runs, or manual dispatch. The private Cloudflare migration workflows have been removed.
+
+**Account action needed:** Set repository visibility back to **Public** in GitHub Settings → Danger Zone → Change repository visibility, because ChatGPT's connected GitHub actions cannot change repo visibility. Then confirm Settings → Pages → Build and deployment → GitHub Actions, and run the regular dashboard workflow from Actions.
+
+**Cost safeguard:** Optional AI analysis is off unless Actions variable `SIGNAL_DESK_ENABLE_PAID_AI=true` and `OPENAI_API_KEY` is provided. No credentials belong in the repo or published JSON. Free-tier eligibility depends on current GitHub limits and account usage.
+
+**Public data warning:** The GitHub Pages HTML, JavaScript and published `data/*.json` are publicly accessible and should contain no portfolio balances, account details, credentials, or private investment notes.
