@@ -43,7 +43,7 @@ h1{font-size:clamp(30px,4.4vw,49px);line-height:1.1;letter-spacing:-1.3px;margin
 const $=id=>document.getElementById(id);
 let CONFIG=[],RESEARCH={},MAIN={},selected="",kind="income";
 const vals={income:[["revenue","Revenue"],["gross_profit","Gross profit"],["operating_income","Operating income"],["net_income","Net income"],["diluted_eps","Diluted EPS"]],balance:[["cash","Cash & equivalents"],["total_assets","Total assets"],["total_liabilities","Total liabilities"],["total_debt","Total debt"],["stockholders_equity","Stockholders equity"]],cashflow:[["operating_cash_flow","Operating cash flow"],["capital_expenditure","Capital expenditures"],["free_cash_flow","Free cash flow"]]};
-const num=x=>x==null||!Number.isFinite(Number(x))?null:Number(x);
+const num=x=>x==null||x===""||!Number.isFinite(Number(x))?null:Number(x);
 const fmt=(x,d=2)=>num(x)==null?"—":Number(x).toLocaleString("en-US",{maximumFractionDigits:d,minimumFractionDigits:d});
 const usd=x=>num(x)==null?"—":"$"+fmt(x);
 const compact=x=>{x=num(x);if(x==null)return "—";const sign=x<0?"-":"";let a=Math.abs(x);return sign+"$"+(a>=1e12?fmt(a/1e12)+"T":a>=1e9?fmt(a/1e9)+"B":a>=1e6?fmt(a/1e6,1)+"M":fmt(a,0))};
