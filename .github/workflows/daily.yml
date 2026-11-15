@@ -1,10 +1,45 @@
-name: Legacy GitHub Pages publishing (disabled)
+name: Refresh and publish investment dashboard
 on:
+  push:
+    branches: [main]
+  schedule:
+    - cron: '15 12 * * *'
+    - cron: '15 22 * * 1-5'
   workflow_dispatch:
 permissions:
   contents: read
+  pages: write
+  id-token: write
+concurrency:
+  group: signal-desk-pages
+  cancel-in-progress: false
 jobs:
-  retired:
+  update-and-deploy:
     runs-on: ubuntu-latest
+    timeout-minutes: 25
+    environment:
+      name: github-pages
+      url: ${{ steps.deployment.outputs.page_url }}
     steps:
-      - run: echo "Legacy GitHub Pages publishing is disabled. Use the private Cloudflare deployment workflow after completing Access setup."
+      - uses: actions/checkout@v4
+      - uses: actions/setup-python@v5
+        with:
+          python-version: '3.12'
+          cache: pip
+      - name: Install dependencies
+        run: pip install -r requirements.txt
+      - name: Refresh market data
+        run: python update_data.py
+        timeout-minutes: 10
+      - name: Refresh research intelligence
+        run: python research_data.py
+        timeout-minutes: 15
+        env:
+          OPENAI_API_KEY: ${{ vars.SIGNAL_DESK_ENABLE_PAID_AI == 'true' && secrets.OPENAI_API_KEY || '' }}
+          OPENAI_MODEL: gpt-4.1-mini
+      - uses: actions/configure-pages@v5
+      - uses: actions/upload-pages-artifact@v4
+        with:
+          path: .
+      - id: deployment
+        uses: actions/deploy-pages@v4
