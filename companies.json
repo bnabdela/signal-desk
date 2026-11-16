@@ -54,5 +54,12 @@
     "theme": "Agentic automation",
     "thesis": "Enterprise AI agent orchestration and automation",
     "ir": "https://ir.uipath.com/"
+  },
+  {
+    "ticker": "NVDA",
+    "name": "Nvidia",
+    "theme": "Semiconductor & AI",
+    "thesis": "Semiconductor company designing GPUs powering modern AI",
+    "ir": "https://ir.uipath.com/"
   }
 ]
