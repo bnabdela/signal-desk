@@ -74,3 +74,7 @@ The regular `.github/workflows/daily.yml` workflow is restored. It fetches quote
 **Cost safeguard:** Optional AI analysis is off unless Actions variable `SIGNAL_DESK_ENABLE_PAID_AI=true` and `OPENAI_API_KEY` is provided. No credentials belong in the repo or published JSON. Free-tier eligibility depends on current GitHub limits and account usage.
 
 **Public data warning:** The GitHub Pages HTML, JavaScript and published `data/*.json` are publicly accessible and should contain no portfolio balances, account details, credentials, or private investment notes.
+
+## News links (November 2026 fix)
+
+The news collector now uses provider article URLs from Yahoo Finance news metadata instead of Google News RSS redirect tokens, which could lead visitors to Google automated-query error pages. The **More coverage** link opens the ticker's Yahoo Finance news page. The research collector reuses the cleaned headline data. If the news API does not provide a direct HTTPS link, the entry is omitted; missing news is not backfilled with stale redirect links. Publisher websites can still require a subscription or deny access independently. After any change to this collector, run the GitHub Actions deploy workflow to refresh the published JSON; a browser-only refresh will not repair old cached link data.
