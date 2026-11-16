@@ -4,8 +4,7 @@ import json
 import math
 from pathlib import Path
 from concurrent.futures import ThreadPoolExecutor, as_completed
-from urllib.parse import quote as urlquote
-import feedparser
+from urllib.parse import urlparse
 import yfinance as yf
 
 ROOT=Path(__file__).resolve().parent
@@ -78,18 +77,48 @@ def fetch(item):
         except Exception:pass
     except Exception as e:
         out["error"]="Market-data fetch failed: "+type(e).__name__
+    # Use publisher links from Yahoo Finance news metadata. Google News RSS
+    # yields Google redirect tokens which can lead users to anti-bot pages.
+    # Do not keep old Google-linked headlines if this fetch fails.
+    out["news"]=[]
+    out["news_checked_at"]=NOW
     try:
-        query=urlquote('"' + item["name"] + '" ' + symbol + ' stock earnings when:7d')
-        url="https://news.google.com/rss/search?q="+query+"&hl=en-US&gl=US&ceid=US:en"
-        feed=feedparser.parse(url,request_headers={"User-Agent":"Mozilla/5.0"})
+        try:
+            records=obj.get_news(count=12,tab="news")
+        except TypeError:
+            records=obj.get_news()
         articles=[]
-        for x in feed.entries[:8]:
-            source=x.get("source") or {}
-            articles.append({"title":x.get("title",""),"url":x.get("link",""),"published":x.get("published",""),"source":source.get("title","") if isinstance(source,dict) else ""})
-        if articles:
-            out["news"]=articles
-            out["news_checked_at"]=NOW
-    except Exception:pass
+        seen=set()
+        for entry in records or []:
+            content=entry.get("content") or entry
+            canonical=content.get("canonicalUrl") or {}
+            clickthrough=content.get("clickThroughUrl") or {}
+            candidates=[
+                canonical.get("url") if isinstance(canonical,dict) else canonical,
+                clickthrough.get("url") if isinstance(clickthrough,dict) else clickthrough,
+                content.get("link"), entry.get("link")
+            ]
+            target=None
+            for candidate in candidates:
+                if not isinstance(candidate,str):continue
+                parsed=urlparse(candidate)
+                host=(parsed.hostname or "").lower()
+                if parsed.scheme=="https" and host and not (host=="google.com" or host.endswith(".google.com") or host=="youtu.be"):
+                    target=candidate
+                    break
+            if not target or target in seen:continue
+            seen.add(target)
+            publisher=content.get("provider") or {}
+            if isinstance(publisher,dict):publisher=publisher.get("displayName") or publisher.get("name") or ""
+            published=content.get("pubDate") or content.get("displayTime") or ""
+            if not published and content.get("providerPublishTime"):
+                published=dt.datetime.fromtimestamp(content["providerPublishTime"],dt.timezone.utc).isoformat()
+            articles.append({"title":str(content.get("title") or entry.get("title") or "")[:300],
+                "url":target,"published":str(published)[:100],"source":str(publisher)[:100]})
+            if len(articles)>=8:break
+        out["news"]=articles
+    except Exception as e:
+        out["news_error"]="Publisher news unavailable: "+type(e).__name__
     return symbol,out
 
 def main():
